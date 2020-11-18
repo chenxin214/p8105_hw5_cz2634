@@ -152,7 +152,7 @@ path_df =
 #str_replace specific string with nothing, equal to str_remove specific string in column
 #separate column to two column by _
 #case_when() and recode() to change string name
-path_df %>% 
+combined_df = path_df %>% 
   mutate(
     arm = str_replace(path, "./data/lda_data/", ""),
     arm = str_replace(arm, ".csv", "")
@@ -173,3 +173,22 @@ path_df %>%
 ```
 
 **Visualization**
+
+```{r}
+combined_df %>% 
+  unite(arm_id, arm, subject_ID, remove = FALSE) %>%
+  ggplot(aes(x = week, y = data)) +
+  geom_path(aes(color = arm, group = as.factor(arm_id)),alpha = 0.5) +
+  labs(
+    x = "Week",
+    y = "Observation value",
+    title = "The Observations group by subject over 8 weeks"
+    )
+```
+* As shown in the graph, both control group and experiment group has similar observation value at week 1.  As time going on, the observation value of experiment group rise gradually over time, while control group has no  obvious difference from baseline.
+
+
+
+
+
+
