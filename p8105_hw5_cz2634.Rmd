@@ -170,6 +170,8 @@ combined_df = path_df %>%
     values_to = "data",
     names_to = "week"
 ) 
+
+combined_df
 ```
 
 **Visualization**
@@ -219,7 +221,7 @@ for (i in 1:5000) {
   
 }
 bind_rows(output)#not a list but data frame
-
+print(bind_rows(output))
 ```
 
 **Repeat the above for μ={0,1,2,3,4,5,6}**
@@ -239,6 +241,8 @@ sim_results =
   ) %>% 
   select(-output_lists) %>% 
   unnest(results_df)
+
+sim_results
 ```
 
 **one plot showing the proportion of times the null was rejected**
