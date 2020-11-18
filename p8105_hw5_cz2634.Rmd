@@ -11,8 +11,13 @@ output: github_document
 ```{r setup}
 library(tidyverse)
 library(rvest)
-set.seed(1)
+library(ggplot2)
+library(patchwork)
+set.seed(1000)
 knitr::opts_chunk$set(
+  warning = FALSE,
+  echo =TRUE,
+  message = FALSE,
   fig.height = 8,
   fig.width = 8,
   fig.asp = .6,
@@ -124,4 +129,47 @@ homicide_df =
   nest(data = resolved)
 ```
 
+## Problem 2 
 
+**Import several data**
+```{r}
+#list.files() will list all files in lda_data folder
+#use tibble() to create a df contains all file names
+#mutate string character in the column 'path'
+#map read_csv() across each path 
+path_df = 
+  tibble(
+    path = list.files("./data/lda_data"),
+  ) %>% 
+  mutate(
+    path = str_c("./data/lda_data/", path),
+    data = map(.x = path, ~read_csv(.x)))
+```
+
+**Tidy data**
+```{r}
+#tidy data 
+#str_replace specific string with nothing, equal to str_remove specific string in column
+#separate column to two column by _
+#case_when() and recode() to change string name
+path_df %>% 
+  mutate(
+    arm = str_replace(path, "./data/lda_data/", ""),
+    arm = str_replace(arm, ".csv", "")
+) %>% 
+  separate(arm, into = c("arm", "subject_ID"), sep = "_") %>% 
+  select(arm, subject_ID, data) %>% 
+  mutate(
+    arm = case_when(
+    arm == "con" ~ "control",
+    arm == "exp" ~ "experiment")
+) %>% 
+  unnest(data) %>% 
+  pivot_longer(
+    week_1:week_8,
+    values_to = "data",
+    names_to = "week"
+) 
+```
+
+**Visualization**
