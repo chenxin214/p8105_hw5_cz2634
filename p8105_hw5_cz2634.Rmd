@@ -152,7 +152,7 @@ path_df =
 #str_replace specific string with nothing, equal to str_remove specific string in column
 #separate column to two column by _
 #case_when() and recode() to change string name
-combined_df = path_df %>% 
+tidy_df = path_df %>% 
   mutate(
     arm = str_replace(path, "./data/lda_data/", ""),
     arm = str_replace(arm, ".csv", "")
@@ -164,7 +164,14 @@ combined_df = path_df %>%
     arm == "con" ~ "control",
     arm == "exp" ~ "experiment")
 ) %>% 
-  unnest(data) %>% 
+  unnest(data) 
+  
+tidy_df
+```
+
+
+```{r}
+combined_df = tidy_df %>% 
   pivot_longer(
     week_1:week_8,
     values_to = "data",
@@ -221,7 +228,6 @@ for (i in 1:5000) {
   
 }
 bind_rows(output)#not a list but data frame
-print(bind_rows(output))
 ```
 
 **Repeat the above for μ={0,1,2,3,4,5,6}**
@@ -316,6 +322,7 @@ plot_3 =
 plot_3
 ```
 
+combine plot_2 and plot_3
 ```{r}
 plot_2 / plot_3
 ```
